@@ -68,7 +68,6 @@ def decode_single_unit(message):
     raise "Bencoding error"
 
 def decode_string(message):
-  print message
   length = re.match(r"^(\d*):", message).group(1)
   length = int(length)
 
@@ -83,9 +82,7 @@ def decode_integer(message):
   while message[start] is not 'e':
     token += message[start]
     start += 1
-  return int(token), message[start + 1: ]
-
-
+  return int(token), message[(start + 1): ]
 
 
 
