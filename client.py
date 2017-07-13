@@ -1,3 +1,4 @@
+# Look deeply to the unofficial spec for the protocol
 import hashlib
 import os
 import random
@@ -12,11 +13,15 @@ class ClientException(Exception):
 
 class Client(object):
   def __init__(self):
+
+    # Set initials for a client
     self.connection_id = int('41727101980', 16)
     self.current_transaction_id = random.getrandbits(31)
     self.peer_id = os.urandom(20)
     self.key = random.getrandbits(31)
 
+    # Define a retry function which call a given function again and again and
+    # returns the response
     def retry(function_to_repeat):
       def repeated(*args, **kwargs):
         for _ in range(10):
@@ -30,17 +35,20 @@ class Client(object):
       return repeated
 
     @retry
+    # Set a given packet to given ip and port and return the response
     def send_packet(self, sock, host, port, packet):
       sock.send(packet, (host, port))
       response = sock.recv(1024)
       return response
 
+    # Make a packet which is required to set a connection
     def make_connection_packet(self):
       action = 0
       connection_packet = byteconversion.pack_binary_string('>qii', self.connection_id, action,
                                                             self.current_transaction_id)
       return connection_packet
 
+    # check if the recieved packet after sending is valid or not
     def check_packet(self, action_sent, response):
       action_recieved = byteconversion.unpack_binary_string('>i', response[:4])[0]
       if(action_recieved != action_sent):
@@ -59,7 +67,7 @@ class Client(object):
           raise 'Action packet not recieved'
 
 
-
+    # Make the announce packet needed to be send to the tracker address
     def make_announce_packet(self, total_file_length, bencoded_info_hash):
       action = 1
       self.current_transaction_id = random.getrandbits(31)
@@ -85,6 +93,7 @@ class Client(object):
                                                          6881)
       return preamble + info_hash + self.peer_id + download_info
 
+    # Get the peer list from the response from thr tracker
     def get_list_of_peers(self, response):
       num_bytes = len(response)
       if num_bytes < 20:
@@ -101,11 +110,14 @@ class Client(object):
           peer_list.append((ip, port))
         return peers_list
 
+    # Build a peer for this using the ip and port of this client to exchange data
+    # with other peers
     def build_peer(self, (ip, port), num_pieces, info_hash, torrent_download):
       sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       sock.setblocking(0)
       return peer_connection.PeerConnection(ip, port, sock, num_pieces, info_hash, torrent_download)
 
+    # create a socket with the given timeout and type
     def open_connection_with_timeout(timeout, type = 'udp'):
       if type == 'tcp':
         type = socket.SOCK_STREAM
