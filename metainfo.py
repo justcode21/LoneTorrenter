@@ -17,7 +17,7 @@ class MetaInfoFile(object):
         self.file_info_dict = self.get_file_info_dict()
         self.base_file_name = self.parsed_info_hash['name']
         self.type = "single" if len(self.file_info_dict.keys()) == 1 else "multiple"
-        
+
         # Length and Piece information
         self.total_length = self.get_total_length()
         self.piece_length = self.parsed_info_hash['piece length']
@@ -35,8 +35,8 @@ class MetaInfoFile(object):
                 decoded_text = decoded_text + key + ':' + '\n'
                 for key2, value2 in value.iteritems():
                     decoded_text = decoded_text + '---------' + key2 + ':' + str(value2) + '\n'
-        return decoded_text           
-            
+        return decoded_text
+
     @property
     # Determines the url and the port of the first tracker
     def announce_url_and_port(self):
@@ -67,6 +67,6 @@ class MetaInfoFile(object):
         for piece_index in self.file_info_dict.keys():
             total_length += self.file_info_dict[piece_index][1]
         return total_length
-                
-        
-        
+
+
+

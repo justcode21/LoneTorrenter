@@ -35,7 +35,7 @@ class Client(object):
       return repeated
 
     @retry
-    # Set a given packet to given ip and port and return the response
+    # Send a given packet to given ip and port and return the response
     def send_packet(self, sock, host, port, packet):
       sock.send(packet, (host, port))
       response = sock.recv(1024)
