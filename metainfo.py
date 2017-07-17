@@ -22,8 +22,8 @@ class MetaInfoFile(object):
         self.total_length = self.get_total_length()
         self.piece_length = self.parsed_info_hash['piece length']
         self.num_pieces = int(len(self.parsed_info_hash['pieces']) / 20)
-        self.request_blocks_per_piece = int(math.ceil(float(self.piece_length) / REQUEST_SIZE))
-        self.piece_hash = self.parsed_info_hash['pieces']
+        self.request_block_per_piece = int(math.ceil(float(self.piece_length) / REQUEST_SIZE))
+        self.pieces_hash = self.parsed_info_hash['pieces']
 
     # For the user to see the object in string format
     def __str__(self):

@@ -56,14 +56,14 @@ class Torrent(object):
       # Last block may have different number of bytes
       last_block_remainder = self.meta.piece_length % ((self.meta.request_block_per_piece) * REQUEST_SIZE)
       bytes_in_last_block = REQUEST_SIZE if last_block_remainder == 0 else 0
-      block_request_sizes_list = [REQUEST_SIZE] * (self.meta.request_blocks_per_piece - 1) + [bytes_in_last_block]
+      block_request_sizes_list = [REQUEST_SIZE] * (self.meta.request_block_per_piece - 1) + [bytes_in_last_block]
 
-      piece = Piece(piece_index, self.meta_piece_length, self.meta.request_blocks_per_piece,
+      piece = Piece(piece_index, self.meta.piece_length, self.meta.request_block_per_piece,
                     self.meta.pieces_hash, block_request_sizes_list)
       piece_list.append(piece)
 
     # Last Piece has diffrenet number of bytes
-    bytes_remaning = self.meta.total_length % self.meta.piece_length
+    bytes_remaining = self.meta.total_length % self.meta.piece_length
     blocks_remaining = int(math.ceil(float(bytes_remaining) / REQUEST_SIZE))
     bytes_in_last_block = bytes_remaining - ((blocks_remaining - 1) * REQUEST_SIZE)
     block_request_sizes_list = [REQUEST_SIZE] * (blocks_remaining - 1) + [bytes_in_last_block]
