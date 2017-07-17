@@ -7,7 +7,7 @@ import warnings
 
 import client
 import byteconversion
-import session
+import manage
 import torrent
 
 MSEEAGE_TYPE_DICT = {
@@ -26,7 +26,7 @@ class PeerConnection(object):
 
   def __init__(self, ip, port, sock, num_pieces, info_hash, torrent_download):
     self.ip = ip
-    self.port.= port
+    self.port = port
     self.sock = sock
     self.status = 'unverified'
     self.last_message_scheduled = None
@@ -44,21 +44,21 @@ class PeerConnection(object):
  # Peerconnection and torrent objects are updated regularly
 
  # Verify the respone received from the received handshake
- def verify_response_handshake(self, response_handshake):
-  if len(response_handshake) < 68:
-    return False
-  pstrlen_received = byteconversion.unpack_binary_string('>B', response_handshake[0])[0]
-  pstr_received = response_handshake[1: 20]
-  reserved_received = byteconversion.unpack_binary_string('>8B', response_handshake[20:28])
-  info_hash_received = response_handshake[28 : 48]
+  def verify_response_handshake(self, response_handshake):
+    if len(response_handshake) < 68:
+      return False
+    pstrlen_received = byteconversion.unpack_binary_string('>B', response_handshake[0])[0]
+    pstr_received = response_handshake[1: 20]
+    reserved_received = byteconversion.unpack_binary_string('>8B', response_handshake[20:28])
+    info_hash_received = response_handshake[28 : 48]
 
-  if pstrlen_received != 19
-    return False
-  if pstr_received != 'BitTorrent protocol':
-    return False
-  if info_hash != self.info_hash_digest:
-    return False
-  return True
+    if pstrlen_received != 19:
+      return False
+    if pstr_received != 'BitTorrent protocol':
+      return False
+    if info_hash != self.info_hash_digest:
+      return False
+    return True
 
   def parse_choke(self, packet, length):
     self.status = 'chocked'
@@ -136,16 +136,16 @@ class PeerConnection(object):
   def schedule_request(self):
     # Wait until peer has returned a requested block before requesting another.
     if self.num_outstanding_requests < 1:
-    peer_has_piece = False
-    while not peer_has_piece:
-      next = self.torrent_download.strategically_get_next_request()
-      index, begin, length = next
-      peer_has_piece = self.pieces[index]
+      peer_has_piece = False
+      while not peer_has_piece:
+        next = self.torrent_download.strategically_get_next_request()
+        index, begin, length = next
+        peer_has_piece = self.pieces[index]
 
-    request_message = byteconversion.pack_binary_string('>IBIII', 13, 6, index, begin, length)
-    print "....... scheduled request for piece %i, byte-offset %i (%i bytes)" % (index, begin, length)
-    self.out_buffer += request_message
-    self.num_outstanding_requests += 1
+      request_message = byteconversion.pack_binary_string('>IBIII', 13, 6, index, begin, length)
+      print "....... scheduled request for piece %i, byte-offset %i (%i bytes)" % (index, begin, length)
+      self.out_buffer += request_message
+      self.num_outstanding_requests += 1
 
   #Manage the input and output buffer
   def handle_in_buffer(self):
@@ -196,12 +196,12 @@ class PeerConnection(object):
   # Any successfully sent bytes are removed from buffer.
   def send_from_out_buffer(self):
 
-   print "**** processing out buffer, length: %(length)i\n" % {"length" : len(self.out_buffer)}
-   try:
-    sent = self.sock.send(self.out_buffer)
-    self.out_buffer = self.out_buffer[sent: ]
-    print "Sent %i bytes" % sent
-  except socket.error as e:
+    print "**** processing out buffer, length: %(length)i\n" % {"length" : len(self.out_buffer)}
+    try:
+      sent = self.sock.send(self.out_buffer)
+      self.out_buffer = self.out_buffer[sent: ]
+      print "Sent %i bytes" % sent
+    except socket.error as e:
       print "Sent 0 bytes (" + repr(e) + ")"
 
   # Receive to the in buffer of the peer and dispatch to handle_in_buffer
