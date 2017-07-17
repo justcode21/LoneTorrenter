@@ -30,16 +30,16 @@ class Manage(object):
     open(temp_file, 'w').close()
 
   def connect_to_tracker(self):
-    timeout = 1
 
+    timeout = 1
     # Make a socket and connet it to the tracker
-    self.sock = client.open_socket_with_timeout(timeout)
+    self.sock = client.open_socket_with_timeout(1)
     print 'Socket created'
 
     # Make a connection packet with client attributes and return the
     # response of the tracker
     conection_packet = self.client.make_connection_packet()
-    response = self.client.send_packet(self.sock, self.host, self,port, conection_packet)
+    response = self.client.send_packet(self.sock, self.host, self.port, conection_packet)
     return response
 
   def announce_to_tracker(self):
@@ -55,7 +55,7 @@ class Manage(object):
     ANNOUNCE_ID = 1
 
     connection_response = self.connect_to_tracker()
-    self.client.check_packet(CONNECTION_ID, connection_response)
+    self.client.check_packet(CONNECT_ID, connection_response)
 
     announce_response = self.announce_to_tracker()
     self.client.check_packet(ANNOUNCE_ID, announce_response)

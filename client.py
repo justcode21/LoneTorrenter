@@ -3,6 +3,7 @@ import hashlib
 import os
 import random
 import socket
+import struct
 import sys
 import time
 
@@ -27,7 +28,7 @@ class Client(object):
     def repeated(*args, **kwargs):
       for _ in range(10):
         try:
-          response = send_function(*args, **kwargs)
+          response = function_to_repeat(*args, **kwargs)
           print 'Sent'
           return response
         except socket.error as e:
@@ -38,7 +39,7 @@ class Client(object):
   @retry
   # Send a given packet to given ip and port and return the response
   def send_packet(self, sock, host, port, packet):
-    sock.send(packet, (host, port))
+    sock.sendto(packet, (host, port))
     response = sock.recv(1024)
     return response
 
@@ -118,19 +119,20 @@ class Client(object):
     sock.setblocking(0)
     return peer_connection.PeerConnection(ip, port, sock, num_pieces, info_hash, torrent_download)
 
-  # create a socket with the given timeout and type
-  def open_socket_with_timeout(timeout, type = 'udp'):
-    if type == 'tcp':
-      type = socket.SOCK_STREAM
-    else:
-      type = socket.SOCK_DGRAM
-    try:
-      sock = socket.socket(socket.AF_INET, type)
-      sock.settimeout(timeout)
-      return sock
-    except:
-      print 'Could not create socket'
-      sys.exit()
+# create a socket with the given timeout and type
+def open_socket_with_timeout(timeout, type = 'udp'):
+  if type == 'tcp':
+    type = socket.SOCK_STREAM
+  else:
+    type = socket.SOCK_DGRAM
+  try:
+    sock = socket.socket(socket.AF_INET, type)
+    sock.settimeout(1)
+    return sock
+  except socket.error:
+    print timeout
+    print 'Could not create socket'
+    sys.exit()
 
 
 
