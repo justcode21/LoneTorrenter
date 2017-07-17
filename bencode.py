@@ -83,16 +83,3 @@ def decode_integer(message):
     token += message[start]
     start += 1
   return int(token), message[(start + 1): ]
-
-
-
-
-
-
-
-
-
-
-
-
-

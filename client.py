@@ -133,30 +133,3 @@ def open_socket_with_timeout(timeout, type = 'udp'):
     print timeout
     print 'Could not create socket'
     sys.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

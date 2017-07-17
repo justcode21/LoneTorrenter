@@ -67,6 +67,3 @@ class MetaInfoFile(object):
         for piece_index in self.file_info_dict.keys():
             total_length += self.file_info_dict[piece_index][1]
         return total_length
-
-
-

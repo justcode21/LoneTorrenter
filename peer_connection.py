@@ -217,19 +217,3 @@ class PeerConnection(object):
     except socket.error as e:
       print "Receive failed (" + repr(e) + ")"
     return True
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

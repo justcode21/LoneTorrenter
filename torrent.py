@@ -170,22 +170,3 @@ class Piece(object):
     else:
       print "~~~~~~~~~~ Unverified: " + str(self.index)
       return False
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
