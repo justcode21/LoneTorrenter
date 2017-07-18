@@ -212,7 +212,7 @@ class PeerConnection(object):
         return False
       self.in_buffer += response
       status = self.handle_in_buffer()
-      while status in True:
+      while status is True:
         status = self.handle_in_buffer()
     except socket.error as e:
       print "Receive failed (" + repr(e) + ")"
