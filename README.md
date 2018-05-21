@@ -1,4 +1,4 @@
-# LoneTorrenter
+## Overview
 
 LoneTorrenter is a downloading client which follows the bittorrent protocol to download
 torrents from multiple peers after connecting to a single tracker
